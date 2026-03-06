@@ -81,7 +81,7 @@ export default function DocSplitPage() {
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to ChartDesk
+          Back to Chart Desk
         </Link>
 
         <div className="mb-8">
@@ -92,7 +92,7 @@ export default function DocSplitPage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">DocSplit</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Doc Split</h1>
               <p className="text-sm text-gray-500">Split a merged PDF into individual files</p>
             </div>
           </div>

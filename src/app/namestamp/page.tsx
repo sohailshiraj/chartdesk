@@ -13,11 +13,13 @@ import Link from "next/link";
 export default function NameStampPage() {
   const [file, setFile] = useState<File | null>(null);
   const [totalPages, setTotalPages] = useState(0);
-  const [names, setNames] = useState<string[]>([""]);
+  const [patients, setPatients] = useState<string[]>([""]);
   const [corner, setCorner] = useState<Corner>("top-right");
-  const [fontSize, setFontSize] = useState(12);
+  const [fontSize, setFontSize] = useState(10);
   const [status, setStatus] = useState<"idle" | "processing" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+
+  const validPatients = patients.filter((p) => p.trim().length > 0);
 
   const handleFile = useCallback(async (f: File) => {
     setFile(f);
@@ -27,13 +29,12 @@ export default function NameStampPage() {
     setTotalPages(doc.getPageCount());
   }, []);
 
-  const validNames = names.filter((n) => n.trim().length > 0);
-  const canStamp = file && totalPages > 0 && validNames.length > 0 && status !== "processing";
+  const canStamp = file && totalPages > 0 && validPatients.length > 0 && status !== "processing";
 
   const handleStamp = async () => {
     if (!file) return;
-    if (validNames.length === 0) {
-      setErrorMsg("Please add at least one patient name.");
+    if (validPatients.length === 0) {
+      setErrorMsg("Please enter at least one patient.");
       setStatus("error");
       return;
     }
@@ -42,7 +43,7 @@ export default function NameStampPage() {
     setErrorMsg("");
     try {
       const bytes = await file.arrayBuffer();
-      const results = await stampPdfBatch(bytes, validNames, corner, fontSize);
+      const results = await stampPdfBatch(bytes, validPatients, corner, fontSize);
       await downloadAsZip(results, "namestamp-output.zip");
       setStatus("done");
     } catch (e) {
@@ -60,7 +61,7 @@ export default function NameStampPage() {
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to ChartDesk
+          Back to Chart Desk
         </Link>
 
         <div className="mb-8">
@@ -71,8 +72,8 @@ export default function NameStampPage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">NameStamp</h1>
-              <p className="text-sm text-gray-500">Stamp patient names on every page of a chart template</p>
+              <h1 className="text-2xl font-bold text-gray-900">Name Stamp</h1>
+              <p className="text-sm text-gray-500">Stamp patient info on every page of a chart template</p>
             </div>
           </div>
         </div>
@@ -86,23 +87,25 @@ export default function NameStampPage() {
             <FileDropzone onFile={handleFile} file={file} label="Drop your chart template PDF here" />
             {totalPages > 0 && (
               <p className="mt-3 text-sm text-gray-600">
-                <span className="font-medium text-violet-700">{totalPages}</span> page{totalPages !== 1 ? "s" : ""} detected — name will be stamped on all pages
+                <span className="font-medium text-violet-700">{totalPages}</span> page{totalPages !== 1 ? "s" : ""} detected — info will be stamped on all pages
               </p>
             )}
           </div>
 
-          {/* Step 2: Patient names */}
+          {/* Step 2: Patients */}
           {file && totalPages > 0 && (
             <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-              <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">
-                2 — Patient Names
-              </h2>
-              <PatientNameList names={names} onChange={setNames} />
-              {validNames.length > 0 && (
-                <p className="mt-3 text-xs text-gray-500">
-                  {validNames.length} PDF{validNames.length !== 1 ? "s" : ""} will be generated
-                </p>
-              )}
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  2 — Patient Info
+                </h2>
+                {validPatients.length > 0 && (
+                  <span className="text-xs font-medium text-violet-700">
+                    {validPatients.length} PDF{validPatients.length !== 1 ? "s" : ""} will be generated
+                  </span>
+                )}
+              </div>
+              <PatientNameList patients={patients} onChange={setPatients} />
             </div>
           )}
 
@@ -139,7 +142,7 @@ export default function NameStampPage() {
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Done! {validNames.length} stamped PDF{validNames.length !== 1 ? "s" : ""} downloaded as ZIP.
+                  Done! {validPatients.length} stamped PDF{validPatients.length !== 1 ? "s" : ""} downloaded as ZIP.
                 </div>
               )}
 
@@ -151,7 +154,7 @@ export default function NameStampPage() {
                 {status === "processing" ? (
                   <>
                     <Spinner className="h-4 w-4 text-white" />
-                    Stamping {validNames.length} PDF{validNames.length !== 1 ? "s" : ""}...
+                    Stamping {validPatients.length} PDF{validPatients.length !== 1 ? "s" : ""}...
                   </>
                 ) : (
                   <>

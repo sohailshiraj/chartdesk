@@ -3,7 +3,7 @@ import Link from "next/link";
 const tools = [
   {
     href: "/docsplit",
-    name: "DocSplit",
+    name: "Doc Split",
     tagline: "Split a merged PDF into individual files",
     description:
       "Upload a multi-patient merged PDF. Define splits by page ranges or a fixed page count per patient. Download all individual files as a ZIP in one click.",
@@ -28,7 +28,7 @@ const tools = [
   },
   {
     href: "/namestamp",
-    name: "NameStamp",
+    name: "Name Stamp",
     tagline: "Stamp patient names on every page of a chart template",
     description:
       "Upload a blank chart PDF. Add a list of patient names, choose the corner, and generate one stamped PDF per patient — all in a single click.",
@@ -59,7 +59,7 @@ export default function HomePage() {
       <div className="max-w-4xl mx-auto px-4 py-16">
         {/* Hero */}
         <div className="text-center mb-14">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">ChartDesk</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">Chart Desk</h1>
           <p className="text-lg text-gray-500 max-w-xl mx-auto">
             Simple PDF tools for patient chart management. No uploads to servers — everything runs in your browser.
           </p>
