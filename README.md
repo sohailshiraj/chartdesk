@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chart Desk
 
-## Getting Started
+A browser-based PDF utility toolkit. All processing happens locally — no files are uploaded to any server.
 
-First, run the development server:
+Built with Next.js, TypeScript, and Tailwind CSS.
+
+## Tools
+
+### Doc Split
+Split a merged multi-page PDF into individual files.
+
+- Upload a single merged PDF
+- Define splits by **page ranges** (e.g. Patient A: pages 1–5, Patient B: pages 6–8) or **fixed page count** (e.g. every 3 pages = one file)
+- Optionally name each output file
+- Download all split files as a ZIP
+
+### Name Stamp
+Stamp patient information onto every page of a chart template PDF.
+
+- Upload a blank chart template PDF
+- Add one patient per text block (name, ID, DOB, address — anything multi-line)
+- Choose corner placement: top-right (default) or top-left
+- Adjust font size
+- Generates one stamped PDF per patient, downloaded as a ZIP
+- Info is stamped inside a bordered box, close to the page corner
+
+## Running Locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Next.js 16](https://nextjs.org) (App Router)
+- TypeScript
+- Tailwind CSS
+- [pdf-lib](https://pdf-lib.js.org) — PDF manipulation
+- [JSZip](https://stuk.github.io/jszip) — ZIP file generation
+- [react-dropzone](https://react-dropzone.js.org) — file upload
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deployed on [Vercel](https://vercel.com). Connect the repo and it deploys automatically with no configuration needed.
