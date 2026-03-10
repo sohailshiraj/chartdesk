@@ -18,15 +18,21 @@ export default function NameStampPage() {
   const [position, setPosition] = useState<Position>("top-right");
   const [fontSize, setFontSize] = useState(10);
   const [exceptions, setExceptions] = useState<PageException[]>([]);
+  const [ignoredPagesRaw, setIgnoredPagesRaw] = useState("");
   const [status, setStatus] = useState<"idle" | "processing" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   const validPatients = patients.filter((p) => p.trim().length > 0);
+  const ignoredPages = ignoredPagesRaw
+    .split(",")
+    .map((s) => parseInt(s.trim(), 10))
+    .filter((n) => !isNaN(n) && n > 0);
 
   const handleFile = useCallback(async (f: File) => {
     setFile(f);
     setStatus("idle");
     setExceptions([]);
+    setIgnoredPagesRaw("");
     const bytes = await f.arrayBuffer();
     const doc = await PDFDocument.load(bytes);
     setTotalPages(doc.getPageCount());
@@ -52,7 +58,8 @@ export default function NameStampPage() {
         validPatients,
         position,
         fontSize,
-        exceptions
+        exceptions,
+        ignoredPages
       );
       await downloadAsZip(results, "namestamp-output.zip");
       setStatus("done");
@@ -153,8 +160,10 @@ export default function NameStampPage() {
 
               <PageExceptions
                 exceptions={exceptions}
+                ignoredPagesRaw={ignoredPagesRaw}
                 totalPages={totalPages}
                 onChange={setExceptions}
+                onIgnoredPagesChange={setIgnoredPagesRaw}
               />
             </div>
           )}

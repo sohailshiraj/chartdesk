@@ -27,7 +27,8 @@ export async function stampPdf(
   patientInfo: string,
   defaultPosition: Position,
   fontSize: number,
-  exceptions: PageException[] = []
+  exceptions: PageException[] = [],
+  ignoredPages: number[] = []
 ): Promise<Uint8Array> {
   const doc = await PDFDocument.load(pdfBytes);
   const font = await doc.embedFont(StandardFonts.HelveticaBold);
@@ -39,11 +40,12 @@ export async function stampPdf(
   const boxWidth = maxLineWidth + PADDING * 2;
   const boxHeight = textHeight + PADDING * 2;
 
-  // Build a quick lookup: page number → position
   const exceptionMap = new Map(exceptions.map((e) => [e.page, e.position]));
+  const ignoredSet = new Set(ignoredPages);
 
   doc.getPages().forEach((page, i) => {
     const pageNum = i + 1;
+    if (ignoredSet.has(pageNum)) return;
     const position = exceptionMap.get(pageNum) ?? defaultPosition;
     const { width, height } = page.getSize();
 
@@ -80,14 +82,15 @@ export async function stampPdfBatch(
   patients: string[],
   defaultPosition: Position,
   fontSize: number,
-  exceptions: PageException[] = []
+  exceptions: PageException[] = [],
+  ignoredPages: number[] = []
 ): Promise<StampResult[]> {
   const results: StampResult[] = [];
   for (const info of patients) {
     const name =
       info.split("\n").find((l) => l.trim().length > 0)?.trim() ??
       `Patient ${results.length + 1}`;
-    const bytes = await stampPdf(pdfBytes, info, defaultPosition, fontSize, exceptions);
+    const bytes = await stampPdf(pdfBytes, info, defaultPosition, fontSize, exceptions, ignoredPages);
     results.push({ name, bytes });
   }
   return results;
